@@ -14,7 +14,7 @@ import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { ApiResponse } from '@/types/ApiResponse'
 
-function page() {
+function Page() {
   const [username, setUsername] = useState('');
   const [usernameMessage, setUsernameMessage] = useState('');
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
@@ -70,8 +70,7 @@ function page() {
       const axiosError = error as AxiosError<ApiResponse>;
 
       // Default error message
-      let errorMessage = axiosError.response?.data.message;
-      ('There was a problem with your sign-up. Please try again.');
+      const errorMessage = axiosError.response?.data.message;
 
       toast({
         title: 'Sign Up Failed',
@@ -188,4 +187,4 @@ function page() {
   )
 }
 
-export default page
+export default Page

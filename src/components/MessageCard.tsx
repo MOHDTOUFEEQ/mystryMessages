@@ -14,15 +14,12 @@ import {
   import {
     Card,
     CardContent,
-    CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
   } from "@/components/ui/card"
 import { Button } from './ui/button'
 import { Message } from '@/model/Users'
-import axios, { AxiosError } from 'axios'
-import { ApiResponse } from '@/types/ApiResponse'
+import axios from 'axios'
 import { toast } from '@/hooks/use-toast'
 import { X } from 'lucide-react'
   
@@ -32,9 +29,16 @@ function MessageCard({message , onMessageDelete }: {message: Message , onMessage
           onMessageDelete(message._id as string);
     
         } catch (error) {
-        //   const axiosError = error as AxiosError<ApiResponse>;
+
+          let errorMessage = 'An error occurred while fetching data.'; // Default message
+
+    // If error is AxiosError, include specific details
+            if (axios.isAxiosError(error)) {
+                errorMessage = error.response?.data?.error || errorMessage; // Use error response or fallback
+            }
+
           toast({
-            title: 'Error',
+            title: errorMessage,
             description: 'Failed to delete message',
             variant: 'destructive',
           });

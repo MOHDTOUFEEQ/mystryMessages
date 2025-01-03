@@ -1,5 +1,4 @@
 "use client"
-import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react';
 import { useSession } from "next-auth/react";

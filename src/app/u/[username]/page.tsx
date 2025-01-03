@@ -1,14 +1,13 @@
 'use client'
 import questions from '@/data/question'
 import { toast } from '@/hooks/use-toast'
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import { useParams } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 
 function Page() {
     const params = useParams()
     const [message, setMessage] = useState('')
-    const [index, setIndex] = useState(0)
     const [suggestedMessages, setSuggestedMessages] = useState<string[]>([])
 
     useEffect(() => {

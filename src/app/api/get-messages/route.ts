@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import UserModel from "@/model/Users";
 import dbConnect from "@/lib/dbConnect";
 import { authOptions } from "../auth/[...nextauth]/options";
@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 
 await dbConnect()
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         
         const session = await getServerSession(authOptions);
@@ -42,7 +42,16 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({messages: messages[0].messages, success: true}, {status: 200});
     } catch (error) {
-        return NextResponse.json({error: "Internal server error"}, {status: 500});
-    }
+        console.error("Error: ", error); // Log the error to help with debugging
+        
+        // Return a more detailed error response
+        return NextResponse.json(
+          {
+            error: "Internal server error",
+            message: error instanceof Error ? error.message : "An unknown error occurred", // Providing the error message if it's available
+          },
+          { status: 500 }
+        );
+      }
 }
 

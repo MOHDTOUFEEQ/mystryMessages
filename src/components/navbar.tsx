@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
 import { HoveredLink, Menu, MenuItem } from "./ui/navbar-menu";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "../lib/utils";

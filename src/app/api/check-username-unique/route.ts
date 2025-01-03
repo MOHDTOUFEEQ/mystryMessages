@@ -32,6 +32,15 @@ export async function GET(req: NextRequest) {
     }
     return NextResponse.json({ unique: true, message: "Username is unique" }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Error: ", error); // Log the error to help with debugging
+    
+    // Return a more detailed error response
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "An unknown error occurred", // Providing the error message if it's available
+      },
+      { status: 500 }
+    );
   }
 }

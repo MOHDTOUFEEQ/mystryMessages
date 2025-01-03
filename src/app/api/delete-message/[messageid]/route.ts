@@ -1,8 +1,6 @@
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/Users';
-import { models } from 'mongoose';
 import { getServerSession } from 'next-auth';
-import { useSession } from 'next-auth/react';
 import { authOptions } from '../../auth/[...nextauth]/options';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -19,6 +17,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { messa
         await UserModel.findByIdAndUpdate(user._id, { $pull: { messages: { _id: messageid } } });
         return NextResponse.json({ message: 'Message deleted successfully' }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ message: 'Failed to delete message' }, { status: 500 });
+
+        return NextResponse.json({ message: 'Failed to delete message', error: error  }, { status: 500 });
     }
 }

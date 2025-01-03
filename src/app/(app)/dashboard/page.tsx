@@ -5,11 +5,9 @@ import { Switch } from "@/components/ui/switch";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { acceptMessageSchema } from '@/schemas/acceptMessageSchema';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { toast } from '@/hooks/use-toast';
-import { RefreshCcw, Loader2 } from 'lucide-react';
 import MessageCard from '@/components/MessageCard';
 import { Message } from '@/model/Users';
 import Skeleton from 'react-loading-skeleton';
@@ -36,7 +34,38 @@ function DashboardPage() {
             duration: 1000,
         });
     };
+    function handleDeleteMessage(id : string) {
+        axios.delete(`/api/delete-message/${id}`)
+        .then((response) => {
+            if (response.data.success == "200") {
+                toast({
+                    title: 'im up',
+                    description: 'The message has been deleted successfully',
+                });
+                setMessages((prevMessages) => prevMessages.filter((message) => message._id !== id));
+                toast({
+                    title: 'Message deleted',
+                    description: 'The message has been deleted successfully',
+                });
+            } else {
+                toast({
+                    title: 'Error deleting message',
+                    description: response.data.message || 'Please try again later',
+                    variant: 'destructive',
+                });
+            }
+        })
+        .catch((error) => {
+            console.error('Error deleting message:', error);
+            toast({
+                title: 'Error deleting message',
+                description: 'An error occurred while deleting the message. Please try again later.',
+                variant: 'destructive',
+            });
+        });
+    }
 
+    
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
@@ -54,10 +83,17 @@ function DashboardPage() {
                 } else {
                     setNoMessages(true);
                 }
-            } catch (error) {
+            }catch (error) {
+                let errorMessage = 'An error occurred while fetching data.'; // Default message
+            
+                // If error is AxiosError, include specific details
+                if (axios.isAxiosError(error)) {
+                    errorMessage = error.response?.data?.error || errorMessage; // Use error response or fallback
+                }
+            
                 toast({
                     title: 'Error',
-                    description: 'An error occurred while fetching data.',
+                    description: errorMessage,
                     variant: 'destructive',
                 });
             } finally {
@@ -117,7 +153,7 @@ function DashboardPage() {
                     ))
                 ) : messages.length > 0 ? (
                     messages.map((message) => (
-                        <MessageCard key={message._id} message={message} />
+                        <MessageCard key={message._id as string} message={message} onMessageDelete={handleDeleteMessage}  />
                     ))
                 ) : (
                     <div className="col-span-full text-center text-gray-500">

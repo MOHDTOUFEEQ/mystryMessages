@@ -2,7 +2,6 @@
 import React from 'react'
 import { useParams } from 'next/navigation'
 import axios from 'axios'
-import { ApiResponse } from '@/types/ApiResponse'
 import { AxiosError } from 'axios'
 import { useRouter } from 'next/navigation'
 import {  useForm } from 'react-hook-form'
