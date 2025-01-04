@@ -14,6 +14,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         await dbConnect();
+        console.log('Credentials: ', credentials);
         try {
           const user = await UserModel.findOne({
             $or: [
@@ -36,6 +37,7 @@ export const authOptions = {
             throw Error('Incorrect password');
           }
         } catch (err) {
+          console.error('Error: ', err);
           throw new Error(err);
         }
       },
