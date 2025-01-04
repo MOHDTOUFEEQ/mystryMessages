@@ -1,4 +1,4 @@
-import UserModel, { Message } from "@/model/Users";
+import UserModel from "@/model/Users";
 import dbConnect from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
 

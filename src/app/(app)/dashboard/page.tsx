@@ -169,7 +169,7 @@ function DashboardPage() {
                     Accept Messages: {isLoading ? <Skeleton width="6rem" /> : isAcceptingMessages ? 'Enabled' : 'Disabled'}
                 </span>
             </div>
-
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isLoading ? (
                     [...Array(6)].map((_, i) => (
