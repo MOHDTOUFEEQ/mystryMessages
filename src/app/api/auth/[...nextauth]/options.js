@@ -11,10 +11,10 @@ export const authOptions = {
       credentials: {
         email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
-      },
-      async authorize(credentials) {
+      },async authorize(credentials) {
         await dbConnect();
         console.log('Credentials: ', credentials);
+      
         try {
           const user = await UserModel.findOne({
             $or: [
@@ -22,10 +22,13 @@ export const authOptions = {
               { username: credentials.identifier },
             ],
           });
+      
+          console.log('User found:', user);
+      
           if (!user) {
-            throw new Error('No user found with this email');
+            throw new Error('No user found with this email or username');
           }
-        
+      
           const isPasswordCorrect = await bcrypt.compare(
             credentials.password,
             user.password
@@ -33,14 +36,14 @@ export const authOptions = {
           if (isPasswordCorrect) {
             return user;
           } else {
-            
-            throw Error('Incorrect password');
+            throw new Error('Incorrect password');
           }
         } catch (err) {
           console.error('Error: ', err);
-          throw new Error(err);
+          throw new Error(err.message);  // Use err.message to capture the specific error message
         }
-      },
+      }
+      ,
     }),
   ],
   callbacks: {
