@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/sign-in', '/sign-up', '/', '/verify/:path*', 
-    '/u/:username'],
+  matcher: ['/dashboard', '/sign-in', '/sign-up', '/', '/verify/:path*', 
+    '/u/:path*'],
 };
 
 export async function middleware(request: NextRequest) {
