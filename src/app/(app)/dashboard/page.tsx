@@ -19,12 +19,18 @@ function DashboardPage() {
     const [noMessages, setNoMessages] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
+    const [profileUrl, setProfileUrl] = useState('');
     const form = useForm({
         resolver: zodResolver(acceptMessageSchema),
     });
 
     const { register } = form;
-    const profileUrl = `${window.location.origin}/u/${session?.user?.username}`;
+    useEffect(() => {
+        if (session?.user?.username) {
+            const url = `${window.location.origin}/u/${session.user.username}`;
+            setProfileUrl(url);
+        }
+    }, [session?.user?.username]);
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(profileUrl);
