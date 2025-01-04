@@ -71,4 +71,7 @@ export const authOptions = {
     signIn: '/sign-in',
 
   },
+  async redirect({ url, baseUrl }) {
+    return baseUrl;
+  },
 };
