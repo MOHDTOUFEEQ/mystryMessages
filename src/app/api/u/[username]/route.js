@@ -1,9 +1,9 @@
 import UserModel, { Message } from "@/model/Users";
 import dbConnect from "@/lib/dbConnect";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 
-export async function POST(request: NextRequest, { params }: { params: { username: string } }) {
+export async function POST(request, { params }) {
     try {
         await dbConnect();
         const { username } = params;
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest, { params }: { params: { usernam
         if (user.isAcceptingMessages === false) {
             return NextResponse.json({ error: "User is not accepting messages", success: false }, { status: 400 });
         }
-        const messagee = { content: message, createdAt: new Date() } as Message;
+        const messagee = { content: message, createdAt: new Date() };
         user.messages.push(messagee);
         await user.save();
         return NextResponse.json({ message: "User updated successfully", success: true }, { status: 200 });
