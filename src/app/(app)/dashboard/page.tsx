@@ -77,10 +77,12 @@ function DashboardPage() {
 
                 setIsAcceptingMessages(acceptMessagesResponse.data.isAcceptingMessages);
                 const messagesData = messagesResponse.data;
-                if (messagesData.success) {
+                console.log(messagesData);
+                
+                if (messagesData.success && messagesData.message == "message found" ) {
                     setMessages(messagesData.messages || []);
                     setNoMessages(false);
-                } else {
+                } else if(messagesData.success && messagesData.message == "No messages found") {
                     setNoMessages(true);
                 }
             }catch (error) {
@@ -120,7 +122,7 @@ function DashboardPage() {
                             type="text"
                             value={profileUrl}
                             readOnly
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-2 focus:ring-black focus:outline-none"
                         />
                     )}
                     <Button onClick={copyToClipboard} className="w-24 sm:w-28 py-2 text-sm sm:text-base">
@@ -157,7 +159,7 @@ function DashboardPage() {
                     ))
                 ) : (
                     <div className="col-span-full text-center text-gray-500">
-                        {noMessages && <p className="text-lg">No messages found</p>}
+                        {noMessages && <p className="text-lg">Share your link to have your messages here </p>}
                     </div>
                 )}
             </div>

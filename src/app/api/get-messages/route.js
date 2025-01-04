@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import UserModel from "@/model/Users";
 import dbConnect from "@/lib/dbConnect";
 import { authOptions } from "../auth/[...nextauth]/options";
-import { getServerSession, User } from "next-auth";
+import { getServerSession } from "next-auth";
 import mongoose from "mongoose";
 
 await dbConnect()
@@ -12,7 +12,7 @@ export async function GET() {
         
         const session = await getServerSession(authOptions);
         // return NextResponse.json({session: session}, {status: 200});
-        const user: User = session?.user as User;
+        const user = session?.user ;
         if (!session || !session.user) {
             return NextResponse.json({error: "Unauthorized"}, {status: 401});
         }
@@ -37,10 +37,10 @@ export async function GET() {
         ]);
 
         if (!messages || messages.length === 0) {
-            return NextResponse.json({error: "No messages found",success: false, message: "No messages found"}, {status: 404});
+            return NextResponse.json({success: true, message: "No messages found"}, {status: 200});
         }
 
-        return NextResponse.json({messages: messages[0].messages, success: true}, {status: 200});
+        return NextResponse.json({messages: messages[0].messages, success: true, message:"message found"}, {status: 200});
     } catch (error) {
         console.error("Error: ", error); // Log the error to help with debugging
         

@@ -1,6 +1,5 @@
-"use client"; // Add this at the very top
+"use client";
 
-import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import AuthProvider from "./AuthProciver";
@@ -24,9 +23,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname(); // Get the current pathname
+  const pathname = usePathname();
 
-  // Check if the URL starts with "/u"
   const shouldShowNavbar = !pathname.startsWith("/u");
 
   return (
