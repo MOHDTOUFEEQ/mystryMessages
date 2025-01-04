@@ -11,6 +11,7 @@ import MessageCard from '@/components/MessageCard';
 import { Message } from '@/model/Users';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { useRouter } from 'next/navigation';
 
 function DashboardPage() {
     const [isAcceptingMessages, setIsAcceptingMessages] = useState(false);
@@ -23,6 +24,8 @@ function DashboardPage() {
     const form = useForm({
         resolver: zodResolver(acceptMessageSchema),
     });
+
+    const router = useRouter(); // Initialize router
 
     // Fetch user data when the component mounts
     useEffect(() => {
@@ -92,8 +95,6 @@ function DashboardPage() {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                console.log("awdhioaeoi");
-                
                 const [acceptMessagesResponse, messagesResponse] = await Promise.all([
                     axios.get('/api/accept-messages'),
                     axios.get('/api/get-messages')
@@ -128,6 +129,11 @@ function DashboardPage() {
         fetchData();
     }, []);
 
+    // Handle the redirection to the user's profile URL
+    const redirectToProfile = () => {
+        router.push(profileUrl); // Perform the redirection using Next.js router
+    };
+
     return (
         <div className="my-8 lg:mx-auto p-6 sm:p-8 bg-white shadow-lg rounded-lg w-full max-w-6xl" style={{ paddingTop: '15vh' }}>
             <h1 className="text-3xl sm:text-4xl font-semibold mb-6 text-gray-800 text-center">
@@ -149,6 +155,9 @@ function DashboardPage() {
                     )}
                     <Button onClick={copyToClipboard} className="w-24 sm:w-28 py-2 text-sm sm:text-base">
                         {isLoading ? <Skeleton width="100%" height="2.5rem" /> : 'Copy'}
+                    </Button>
+                    <Button onClick={redirectToProfile} className="w-24 sm:w-28 py-2 text-sm sm:text-base bg-blue-500 text-white">
+                        Go to Profile
                     </Button>
                 </div>
             </div>
