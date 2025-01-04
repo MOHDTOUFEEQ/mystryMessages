@@ -1,25 +1,21 @@
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]/options';
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/Users';
-import { User } from 'next-auth';
-
+import { getDataFromToken } from '../../helpers/getDataFromToken'; 
+import { NextResponse } from 'next/server';
 
 
 export async function POST(request) {
   // Connect to the database
   await dbConnect();
 
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
-  if (!session || !session.user) {
-    return Response.json(
-      { success: false, message: 'Not authenticated' },
-      { status: 401 }
-    );
+   const tokenData = getDataFromToken(request);
+    const  id  = tokenData;
+  
+    if (!id || !tokenData) {
+        return NextResponse.json({error: "Unauthorized"}, {status: 401});
   }
 
-  const userId = user._id;
+  const userId = id;
   const { acceptMessages } = await request.json();
 
   try {
@@ -60,26 +56,25 @@ export async function POST(request) {
 }
 
 
-export async function GET() {
+export async function GET(request) {
   // Connect to the database
   await dbConnect();
-
   // Get the user session
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
-
+  const tokenData = getDataFromToken(request);
+  const  id  = tokenData;
+  
   // Check if the user is authenticated
-  if (!session || !user) {
+  if (!id || !tokenData) {
     return Response.json(
       { success: false, message: 'Not authenticated' },
       { status: 401 }
     );
   }
-
+  
   try {
     // Retrieve the user from the database using the ID
-    const foundUser = await UserModel.findById(user._id);
-
+    const foundUser = await UserModel.findById(id);
+    
     if (!foundUser) {
       // User not found
       return Response.json(
@@ -87,7 +82,7 @@ export async function GET() {
         { status: 404 }
       );
     }
-
+    
     // Return the user's message acceptance status
     return Response.json(
       {

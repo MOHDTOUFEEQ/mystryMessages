@@ -1,22 +1,20 @@
 import { NextResponse } from "next/server";
 import UserModel from "@/model/Users";
 import dbConnect from "@/lib/dbConnect";
-import { authOptions } from "../auth/[...nextauth]/options";
-import { getServerSession } from "next-auth";
 import mongoose from "mongoose";
 
+import { getDataFromToken } from '../../helpers/getDataFromToken'; 
 await dbConnect()
 
-export async function GET() {
+export async function GET(request) {
     try {
         
-        const session = await getServerSession(authOptions);
-        // return NextResponse.json({session: session}, {status: 200});
-        const user = session?.user ;
-        if (!session || !session.user) {
+        const tokenData = getDataFromToken(request);
+        const  id  = tokenData;
+        if (!id || !tokenData) {
             return NextResponse.json({error: "Unauthorized"}, {status: 401});
         }
-        const userID = new mongoose.Types.ObjectId(user._id);
+        const userID = new mongoose.Types.ObjectId(id);
         if (!userID) {
             return NextResponse.json({error: "User ID not found"}, {status: 400});
         }
@@ -35,7 +33,7 @@ export async function GET() {
                 $group: { _id: '$_id', messages: { $push: '$messages' } } 
             },
         ]);
-
+        
         if (!messages || messages.length === 0) {
             return NextResponse.json({success: true, message: "No messages found"}, {status: 200});
         }

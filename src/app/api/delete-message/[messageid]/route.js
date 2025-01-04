@@ -1,19 +1,19 @@
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/Users';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../auth/[...nextauth]/options';
 import { NextResponse } from 'next/server';
+import { getDataFromToken } from '../../../helpers/getDataFromToken'; 
 
 export async function DELETE(request, { params }) {
     const { messageid } = params;
-    const session = await getServerSession(authOptions);
-    const user = session?.user;
-    if(!session || !user) {
+
+    const tokenData = getDataFromToken(request);
+    const  id  = tokenData;
+    if(!id || !tokenData) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
     await dbConnect();
     try {
-        await UserModel.findByIdAndUpdate(user._id, { $pull: { messages: { _id: messageid } } });
+        await UserModel.findByIdAndUpdate(id, { $pull: { messages: { _id: messageid } } });
         return NextResponse.json({ message: 'Message deleted successfully' }, { status: 200 });
     } catch (error) {
 

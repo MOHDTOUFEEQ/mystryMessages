@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signInSchema } from '@/schemas/signInSchema';
 import { useToast } from '@/hooks/use-toast';
+import axios from 'axios';
 
 export default function SignInForm() {
   const router = useRouter();
@@ -25,45 +26,47 @@ export default function SignInForm() {
 
   const { toast } = useToast();
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-    // Disable submit button on form submission
+  
     try {
-      const result = await signIn('credentials', {
-        identifier: data.identifier,
-        password: data.password,
-        redirect: false, // Prevent auto-redirect, we'll handle it manually
-      });
-
-      if (result?.error) {
-        if (result.error === 'CredentialsSignin') {
-          toast({
-            title: 'Login Failed',
-            description: 'Incorrect username or password',
-            variant: 'destructive',
-            duration: 2000,
-          });
-        } else {
-          toast({
-            title: 'Error',
-            description: result.error,
-            variant: 'destructive',
-            duration: 2000,
-          });
-        }
-      } else if (result?.url) {
+      // Send the POST request with the form data
+      const result = await axios.post('/api/sign-in', data);
+  
+      // Check if the result contains an error field
+      if (result?.data?.success === false) {
+        // If there was an issue with login credentials
+        toast({
+          title: 'Login Failed',
+          description: result?.data?.message || 'Incorrect username or password',
+          variant: 'destructive',
+          duration: 2000,
+        });
+      } else if (result?.data?.success === true) {
+        // If login was successful
         toast({
           title: 'Login Successful',
           description: 'Redirecting to your dashboard...',
           duration: 1500,
         });
+  
+        // Redirect to the dashboard after a successful login
         router.replace('/dashboard');
+      } else {
+        // Handle unexpected error responses
+        toast({
+          title: 'Error',
+          description: 'Unexpected error occurred during login.',
+          variant: 'destructive',
+          duration: 2000,
+        });
       }
     } catch (error) {
+      // Catch any errors (like network issues)
       toast({
         title: 'Unexpected Error',
         description: 'Something went wrong, please try again.',
         variant: 'destructive',
       });
-      console.error(error);
+      console.error('Error during login:', error);
     }
   };
 

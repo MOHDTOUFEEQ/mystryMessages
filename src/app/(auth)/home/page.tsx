@@ -1,10 +1,22 @@
-"use client"
-import Link from 'next/link';
-import React from 'react';
-import { useSession } from "next-auth/react";
+"use client";
 
-function HomePage() {
-  const { data } = useSession();
+import React from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
+
+const HomePage: React.FC = () => {
+  const router = useRouter();
+
+  const handleGettingStart = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    const authToken = Cookies.get("auth-token");
+    if (authToken) {
+      router.push("/dashboard");
+    } else {
+      router.push("/sign-in");
+    }
+  };
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 pt-[15vh]">
       <header className="text-center mb-10">
@@ -49,20 +61,11 @@ function HomePage() {
         </section>
 
         <section className="text-center mt-8">
-            {data?.user ?
-                (<Link href="/dashboard">
-                  <button className="bg-black text-white px-5 py-2 rounded-lg font-medium hover:bg-gray-800 transition text-sm">
-                      Get Started Now
-                  </button>
-                  </Link>)
-                :
-        (<Link href="/sign-in">
-        <button className="bg-black text-white px-5 py-2 rounded-lg font-medium hover:bg-gray-800 transition text-sm">
-            Get Started Now
-        </button>
-        </Link>)
+            
+          <button onClick={handleGettingStart} className="bg-black text-white px-5 py-2 rounded-lg font-medium hover:bg-gray-800 transition text-sm">
+              Get Started Now
+          </button>
 
-            }
         </section>
       </main>
 

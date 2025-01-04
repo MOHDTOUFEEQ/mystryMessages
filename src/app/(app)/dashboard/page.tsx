@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useSession } from "next-auth/react";
 import { Switch } from "@/components/ui/switch";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,24 +13,43 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 function DashboardPage() {
-    const { data: session } = useSession();
     const [isAcceptingMessages, setIsAcceptingMessages] = useState(false);
     const [noMessages, setNoMessages] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [profileUrl, setProfileUrl] = useState('');
+    const [userData, setUserData] = useState<any>(null);
+
     const form = useForm({
         resolver: zodResolver(acceptMessageSchema),
     });
 
-    const { register } = form;
+    // Fetch user data when the component mounts
     useEffect(() => {
-        if (session?.user?.username) {
-            const url = `${window.location.origin}/u/${session.user.username}`;
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get('/api/dashboard');
+                console.log("User data fetched: ", response.data.user);
+                setUserData(response.data.user);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+        
+        fetchUserData();
+    }, []);
+
+    // Set profile URL once userData is available
+    useEffect(() => {
+        if (userData && userData.username) {
+            const url = `${window.location.origin}/u/${userData.username}`;
             setProfileUrl(url);
         }
-    }, [session?.user?.username]);
+    }, [userData]);
 
+    const { register } = form;
+
+    // Handle copy to clipboard
     const copyToClipboard = () => {
         navigator.clipboard.writeText(profileUrl);
         toast({
@@ -40,19 +58,17 @@ function DashboardPage() {
             duration: 1000,
         });
     };
-    function handleDeleteMessage(id : string) {
+
+    // Handle message deletion
+    function handleDeleteMessage(id: string) {
         axios.delete(`/api/delete-message/${id}`)
         .then((response) => {
-            if (response.data.success == "200") {
-                toast({
-                    title: 'im up',
-                    description: 'The message has been deleted successfully',
-                });
-                setMessages((prevMessages) => prevMessages.filter((message) => message._id !== id));
+            if (response.data.status === "200") {
                 toast({
                     title: 'Message deleted',
                     description: 'The message has been deleted successfully',
                 });
+                setMessages((prevMessages) => prevMessages.filter((message) => message._id !== id));
             } else {
                 toast({
                     title: 'Error deleting message',
@@ -71,34 +87,34 @@ function DashboardPage() {
         });
     }
 
-    
+    // Fetch messages and message acceptance status
     useEffect(() => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
+                console.log("awdhioaeoi");
+                
                 const [acceptMessagesResponse, messagesResponse] = await Promise.all([
                     axios.get('/api/accept-messages'),
                     axios.get('/api/get-messages')
                 ]);
-
-                setIsAcceptingMessages(acceptMessagesResponse.data.isAcceptingMessages);
-                const messagesData = messagesResponse.data;
-                console.log(messagesData);
+                console.log("acceptMessagesResponse",messagesResponse);
                 
-                if (messagesData.success && messagesData.message == "message found" ) {
+                setIsAcceptingMessages(acceptMessagesResponse.data.isAcceptingMessages);
+
+                const messagesData = messagesResponse.data;
+                if (messagesData.success && messagesData.message === "message found") {
                     setMessages(messagesData.messages || []);
                     setNoMessages(false);
-                } else if(messagesData.success && messagesData.message == "No messages found") {
+                } else if (messagesData.success && messagesData.message === "No messages found") {
                     setNoMessages(true);
                 }
-            }catch (error) {
-                let errorMessage = 'An error occurred while fetching data.'; // Default message
-            
-                // If error is AxiosError, include specific details
+            } catch (error) {
+                let errorMessage = 'An error occurred while fetching data.';
                 if (axios.isAxiosError(error)) {
-                    errorMessage = error.response?.data?.error || errorMessage; // Use error response or fallback
+                    errorMessage = error.response?.data?.error || errorMessage;
                 }
-            
+
                 toast({
                     title: 'Error',
                     description: errorMessage,
@@ -109,8 +125,8 @@ function DashboardPage() {
             }
         };
 
-        if (session) fetchData();
-    }, [session]);
+        fetchData();
+    }, []);
 
     return (
         <div className="my-8 lg:mx-auto p-6 sm:p-8 bg-white shadow-lg rounded-lg w-full max-w-6xl" style={{ paddingTop: '15vh' }}>
