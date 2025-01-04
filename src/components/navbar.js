@@ -5,8 +5,8 @@ import { useSession, signOut } from "next-auth/react";
 import { cn } from "../lib/utils";
 import { useRouter } from "next/navigation";
 
-function Navbarr({ className, session }: { className?: string, session: any }) {
-  const [active, setActive] = useState<string | null>(null);
+function Navbarr({ className, session }) {
+  const [active, setActive] = useState(null);
 
   const router = useRouter(); // Initialize the router
   const handleSignOut = () => {
