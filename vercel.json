@@ -1,10 +1,6 @@
 {
-    "rewrites": [
-      { "source": "/(.*)", "destination": "/" },
-      {
-        "source": "/u/:username",
-        "destination": "/u/[username]"
-      }
-    ]
-  }
-  
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" },
+    { "source": "/u/:username", "destination": "/u/[username]" }
+  ]
+}
