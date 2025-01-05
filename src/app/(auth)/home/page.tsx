@@ -69,9 +69,7 @@ const HomePage: React.FC = () => {
         </section>
       </main>
 
-      <footer className="mt-10 text-gray-500 text-xs">
-        <p>© 2025 Anonymous Messages. All Rights Reserved.</p>
-      </footer>
+     
     </div>
   );
 }

@@ -12,11 +12,13 @@ import { Message } from '@/model/Users';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { useRouter } from 'next/navigation';
+import { Loader2, RefreshCcw } from 'lucide-react';
 
 function DashboardPage() {
     const [isAcceptingMessages, setIsAcceptingMessages] = useState(false);
     const [noMessages, setNoMessages] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [fetchMessages, setfetchMessages] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
     const [profileUrl, setProfileUrl] = useState('');
     const [userData, setUserData] = useState<any>(null);
@@ -61,34 +63,71 @@ function DashboardPage() {
             duration: 1000,
         });
     };
-
-    // Handle message deletion
-    function handleDeleteMessage(id: string) {
-        axios.delete(`/api/delete-message/${id}`)
-        .then((response) => {
-            if (response.data.status === "200") {
+    
+    const handleAcceptMessagesToggle = async (checked: boolean) => {
+        setIsAcceptingMessages(checked);
+    
+        try {
+            // Send request to the backend to update the database
+            const response = await axios.post('/api/accept-messages', { acceptMessages: checked });
+    
+            // Check if the update was successful
+            if (response.status === 200) {
                 toast({
-                    title: 'Message deleted',
-                    description: 'The message has been deleted successfully',
+                    title: 'Success',
+                    description: `Messages acceptance has been ${checked ? 'enabled' : 'disabled'}`,
                 });
-                setMessages((prevMessages) => prevMessages.filter((message) => message._id !== id));
             } else {
+                // Handle any non-200 responses from the API
                 toast({
-                    title: 'Error deleting message',
-                    description: response.data.message || 'Please try again later',
+                    title: 'Error updating settings',
+                    description: 'Could not update your message acceptance preference. Please try again later.',
                     variant: 'destructive',
                 });
             }
-        })
-        .catch((error) => {
-            console.error('Error deleting message:', error);
+        } catch (error) {
+            // Handle any error during the API request
             toast({
-                title: 'Error deleting message',
-                description: 'An error occurred while deleting the message. Please try again later.',
+                title: 'Error',
+                description: 'An error occurred while updating your settings. Please try again later.',
                 variant: 'destructive',
             });
-        });
+            console.error('Error updating message acceptance:', error);
+        }
+    };
+    // Handle message deletion
+    function handleDeleteMessage(id: string) {
+        axios.delete(`/api/delete-message/${id}`)
+            .then((response) => {
+                // Check if the response is successful
+                if (response.status === 200) {
+                    toast({
+                        title: 'Message deleted',
+                        description: 'The message has been deleted successfully',
+                    });
+                    
+                    // Update the messages state by filtering out the deleted message
+                    setMessages((prevMessages) => prevMessages.filter((message) => message._id !== id));
+                } else {
+                    // Handle non-200 status codes from the API
+                    toast({
+                        title: 'Error deleting message',
+                        description: response.data.message || 'An unknown error occurred. Please try again later.',
+                        variant: 'destructive',
+                    });
+                }
+            })
+            .catch((error) => {
+                // Handle network or other unexpected errors
+                console.error('Error deleting message:', error);
+                toast({
+                    title: 'Error deleting message',
+                    description: error.response?.data?.message || 'An error occurred while deleting the message. Please try again later.',
+                    variant: 'destructive',
+                });
+            });
     }
+    
 
     // Fetch messages and message acceptance status
     useEffect(() => {
@@ -127,13 +166,9 @@ function DashboardPage() {
         };
 
         fetchData();
-    }, []);
+    }, [fetchMessages]);
 
-    // Handle the redirection to the user's profile URL
-    const redirectToProfile = () => {
-        router.push(profileUrl); // Perform the redirection using Next.js router
-    };
-
+    
     return (
         <div className="my-8 lg:mx-auto p-6 sm:p-8 bg-white shadow-lg rounded-lg w-full max-w-6xl" style={{ paddingTop: '15vh' }}>
             <h1 className="text-3xl sm:text-4xl font-semibold mb-6 text-gray-800 text-center">
@@ -156,12 +191,10 @@ function DashboardPage() {
                     <Button onClick={copyToClipboard} className="w-24 sm:w-28 py-2 text-sm sm:text-base">
                         {isLoading ? <Skeleton width="100%" height="2.5rem" /> : 'Copy'}
                     </Button>
-                    <Button onClick={redirectToProfile} className="w-24 sm:w-28 py-2 text-sm sm:text-base bg-blue-500 text-white">
-                        Go to Profile
-                    </Button>
+                    
                 </div>
             </div>
-
+            
             <div className="flex items-center mb-6">
                 {isLoading ? (
                     <Skeleton circle width="2rem" height="2rem" />
@@ -169,16 +202,27 @@ function DashboardPage() {
                     <Switch
                         {...register('acceptMessages')}
                         checked={isAcceptingMessages}
-                        onCheckedChange={(checked) => {
-                            setIsAcceptingMessages(checked);
-                        }}
+                        onCheckedChange={(checked) => handleAcceptMessagesToggle(checked)}
                     />
                 )}
                 <span className="ml-3 text-gray-600 text-sm sm:text-base">
                     Accept Messages: {isLoading ? <Skeleton width="6rem" /> : isAcceptingMessages ? 'Enabled' : 'Disabled'}
                 </span>
             </div>
-            
+            <Button
+        className="mt-4"
+        variant="outline"
+        onClick={(e) => {
+          e.preventDefault();
+          setfetchMessages((val)=> !val);
+        }}
+      >
+        {isLoading ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <RefreshCcw className="h-4 w-4" />
+        )}
+      </Button>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {isLoading ? (
                     [...Array(6)].map((_, i) => (

@@ -143,9 +143,7 @@ function Page() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <Input {...field} type="email" />
-                  <p className="text-xs text-muted-foreground">
-                    Well send you a verification code
-                  </p>
+                  
                   <FormMessage />
                 </FormItem>
               )}
