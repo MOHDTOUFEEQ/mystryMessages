@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: errorMessage.length > 0 ? errorMessage : "Invalid username" }, { status: 400 });
       }
 
-    const user = await UserModel.findOne({ username , isVerified: true});
+    const user = await UserModel.findOne({ username });
     if (user) {
       return NextResponse.json({ error: "Username already exists", }, { status: 400 });
     }
