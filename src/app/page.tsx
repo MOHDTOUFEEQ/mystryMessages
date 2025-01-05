@@ -17,7 +17,7 @@ function HomePage() {
     }
   };
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 pt-[15vh]">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4 pt-[20vh]">
       <header className="text-center mb-10">
         <h1 className="text-3xl font-bold text-black">Welcome to Anonymous Messages</h1>
         <p className="text-gray-700 mt-3 text-base">
