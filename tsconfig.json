@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/get-messages/route.js", "src/app/api/delete-message/[messageid]/route.js", "src/app/api/auth/[...nextauth]/route.ts", "src/app/api/auth/[...nextauth]/options.ts", "src/app/api/accept-messages/route.js", "src/app/api/u/[username]/route.js", "src/components/navbar.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/get-messages/route.js", "src/app/api/delete-message/[messageid]/route.js", "src/app/api/auth/[...nextauth]/route.ts", "src/app/api/auth/[...nextauth]/options.ts", "src/app/api/accept-messages/route.js", "src/app/api/u/[username]/route.js", "src/components/navbar.js", "src/app/api/dashboard/route.js"],
   "exclude": ["node_modules"]
 }
