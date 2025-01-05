@@ -22,9 +22,7 @@ const Page = () => {
     try {
         const username = params.username
         const verifyCode = data.code
-        console.log(username, verifyCode)
         const response = await axios.post(`/api/verify-code`, { username, verifyCode })
-        console.log(response)
       if (response.status === 200) {
         toast({
           title: 'Verification successful',

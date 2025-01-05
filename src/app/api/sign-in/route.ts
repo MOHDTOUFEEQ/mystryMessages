@@ -19,8 +19,6 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log('Received credentials:', identifier, password);
-
     // Find the user by email or username
     const user = await UserModel.findOne({
       $or: [{ email: identifier }, { username: identifier }],
@@ -48,9 +46,7 @@ export async function POST(request: Request) {
       email: user.email
   }
     const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {expiresIn: "1d"})
-        if(token){
-            console.log(token);
-        }
+        
         const response = NextResponse.json({
             message: "Login successful",
             success: true,

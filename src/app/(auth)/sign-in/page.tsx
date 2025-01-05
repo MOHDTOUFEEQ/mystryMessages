@@ -29,8 +29,6 @@ export default function SignInForm() {
     try {
       // Send the POST request with the form data
       const result = await axios.post('/api/sign-in', data);
-      console.log("im ress", result);
-      
       // Check if the result contains an error field
       if (result?.data?.success === false) {
         // If there was an issue with login credentials
@@ -66,7 +64,6 @@ export default function SignInForm() {
         description: 'Something went wrong, please try again.',
         variant: 'destructive',
       });
-      console.error('Error during login:', error);
     }
   };
 

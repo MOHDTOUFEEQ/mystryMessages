@@ -34,7 +34,6 @@ function DashboardPage() {
         const fetchUserData = async () => {
             try {
                 const response = await axios.get('/api/dashboard');
-                console.log("User data fetched: ", response.data.user);
                 setUserData(response.data.user);
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -138,7 +137,6 @@ function DashboardPage() {
                     axios.get('/api/accept-messages'),
                     axios.get('/api/get-messages')
                 ]);
-                console.log("acceptMessagesResponse",messagesResponse);
                 
                 setIsAcceptingMessages(acceptMessagesResponse.data.isAcceptingMessages);
 

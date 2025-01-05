@@ -35,7 +35,7 @@ function Page() {
         try {
           setIsCheckingUsername(true)
           const res = await axios.get(`/api/check-username-unique?username=${username}`)
-          console.log(res);
+    
           
           setUsernameMessage(res.data.message)
         } catch (error) {
@@ -43,7 +43,6 @@ function Page() {
           setUsernameMessage(
             axiosError.response?.data.message ?? 'alredy username exists'
           );
-          // console.log(error)
         } finally {
           setIsCheckingUsername(false)
         }
@@ -56,7 +55,7 @@ function Page() {
     try {
       setIsSubmitting(true)
       const res = await axios.post('/api/sign-up', data)
-      console.log(res);
+      
       toast({
         title: "Account created",
         description: "Redirecting to the login page.",
