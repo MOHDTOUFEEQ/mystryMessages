@@ -12,8 +12,7 @@ function Navbarr({ className }) {
 
   // Function to check the current auth token and update the state
   const checkAuthToken = () => {
-    const token = Cookies.get('auth-token'); // Get the 'auth-token' cookie
-    console.log("auth-token from cookies:", token);
+    const token = Cookies.get('auth-token'); 
 
     if (token) {
       setUserActive(true); // If token exists, set userActive to true
