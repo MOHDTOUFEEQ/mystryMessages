@@ -15,30 +15,29 @@ function Navbarr({ className }) {
     const token = Cookies.get('auth-token'); 
 
     if (token) {
-      setUserActive(true); // If token exists, set userActive to true
+      setUserActive(true); 
     } else {
-      setUserActive(false); // If no token, set userActive to false
+      setUserActive(false); 
     }
   };
 
-  // Handle sign-out by removing the cookie and redirecting
   const handleSignOut = () => {
-    Cookies.remove("auth-token"); // Remove the auth-token cookie
-    setUserActive(false); // Set userActive state to false
-    router.push("/sign-in"); // Redirect to sign-in page
+    Cookies.remove("auth-token");
+    setUserActive(false); 
+    router.push("/sign-in");
   };
 
   useEffect(() => {
-    checkAuthToken(); // Check token immediately on mount
+    checkAuthToken(); 
 
-    // Set an interval to check the token every second
-    const intervalId = setInterval(checkAuthToken, 1000); // Check token every second
+    const intervalId = setInterval(checkAuthToken, 1000); 
 
-    // Clean up interval on unmount
     return () => {
       clearInterval(intervalId);
     };
-  }, []); // Empty dependency array ensures effect runs once on mount
+  }, []);
+
+
 
   return (
     <div className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50 dark", className)}>
@@ -48,7 +47,13 @@ function Navbarr({ className }) {
             <HoveredLink href="/home">Home</HoveredLink>
           </div>
         </MenuItem>
-
+        {userActive && (
+          <MenuItem setActive={setActive} active={active} item="messageBoard">
+            <div className="flex flex-col space-y-4 text-sm">
+              <HoveredLink href="/messageBoard">messageBoard</HoveredLink>
+            </div>
+          </MenuItem>
+        )}
         {userActive && (
           <MenuItem setActive={setActive} active={active} item="dashboard">
             <div className="flex flex-col space-y-4 text-sm">
@@ -57,7 +62,6 @@ function Navbarr({ className }) {
           </MenuItem>
         )}
 
-        {/* Conditional rendering based on session */}
         {userActive ? (
           <MenuItem setActive={setActive} active={active} item="Logout">
             <div className="flex flex-col space-y-4 text-sm">
