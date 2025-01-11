@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { toast } from '@/hooks/use-toast';
 import questions from '../../../../data/question'; // Importing the questions from JSON
+import Link from 'next/link'; // Importing Link from 'next/link'
 
 function Page() {
     const params = useParams(); // Access dynamic route parameter
@@ -68,61 +69,63 @@ function Page() {
             <div className="bg-white rounded-lg shadow-md p-6 mb-8">
                 <h1 className="text-3xl font-bold text-gray-800 mb-4 flex justify-between items-center">
                     <span>Send message to {params.username}</span>
-                   
                 </h1>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6">
-    <h2 className="text-xl font-semibold text-gray-700 mb-4 flex justify-between items-center">
-        <span>Your Identity Will Remain Anonymous</span>
-        
-        {/* Spinner that triggers question refresh on click */}
-        {loadingQuestions ? (
-            <div className="w-8 h-8 border-4 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
-        ) : (
-            <button onClick={loadRandomQuestions} className="cursor-pointer">
-                <div>↻</div>
-            </button>
-        )}
-    </h2>
-
-    <div className="mb-6">
-        <h3 className="text-sm font-semibold text-gray-600 mb-3">
-            Suggested Messages:
-        </h3>
-        <div className="flex flex-wrap gap-2">
-            {suggestedMessages.map((msg, index) => (
-                <button
-                    key={index}
-                    onClick={() => setMessage(msg)}
-                    className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200"
-                >
-                    {msg}
-                </button>
-            ))}
-        </div>
-    </div>
-
-    <form onSubmit={handleSubmit} className="space-y-4">
-        <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black-500 focus:border-transparent resize-none"
-            placeholder="Type your anonymous message here..."
-            rows={4}
-            required
-        />
-
-        <button
-            type="submit"
-            className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-black transition duration-200"
-            disabled={loading} // Disable button when submitting
-        >
-            {loading ? 'Submitting...' : 'Send Message'}
-        </button>
-    </form>
+            <div className="bg-blue-100 text-blue-800 p-4 rounded-lg mb-6 shadow-md">
+    <Link href={`/messages/${params.username}`}>
+        <span className="text-lg font-semibold hover:underline">
+            📩 View Replies: Click here to see user responses to the anonymous messages
+        </span>
+    </Link>
 </div>
 
+            <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-xl font-semibold text-gray-700 mb-4 flex justify-between items-center">
+                    <span>Your Identity Will Remain Anonymous</span>
+                    {/* Spinner that triggers question refresh on click */}
+                    {loadingQuestions ? (
+                        <div className="w-8 h-8 border-4 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
+                    ) : (
+                        <button onClick={loadRandomQuestions} className="cursor-pointer">
+                            <div>↻</div>
+                        </button>
+                    )}
+                </h2>
 
+                <div className="mb-6">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-3">Suggested Messages:</h3>
+                    <div className="flex flex-wrap gap-2">
+                        {suggestedMessages.map((msg, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setMessage(msg)}
+                                className="px-4 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200"
+                            >
+                                {msg}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <textarea
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black-500 focus:border-transparent resize-none"
+                        placeholder="Type your anonymous message here..."
+                        rows={4}
+                        required
+                    />
+
+                    <button
+                        type="submit"
+                        className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-black transition duration-200"
+                        disabled={loading} // Disable button when submitting
+                    >
+                        {loading ? 'Submitting...' : 'Send Message'}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

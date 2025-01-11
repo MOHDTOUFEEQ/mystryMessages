@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
 
-  const shouldShowNavbar = !pathname.startsWith("/u");
+  const shouldShowNavbar = !pathname.startsWith("/u") && !pathname.startsWith("/messages");
 
   return (
     <html lang="en">
