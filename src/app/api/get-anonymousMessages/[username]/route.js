@@ -27,6 +27,9 @@ export async function GET(request, { params }) {
         const messages = await UserModel.aggregate([
             { $match: { _id: userID } },
             { $unwind: "$messages" },
+            { 
+                $match: { "messages.status": true } // Filter only messages where status is true
+            },
             { $sort: { "messages.createdAt": -1 } },
             { $group: { _id: "$_id", messages: { $push: "$messages" } } },
         ]);

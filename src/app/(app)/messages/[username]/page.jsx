@@ -5,19 +5,19 @@ import { useParams } from "next/navigation";
 
 const MessageBoard = () => {
   const params = useParams(); // Access dynamic route parameter
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]); // State for messages
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     // Fetch messages from the server
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`/api/get-anonymousMessages/${params.username}`); // Update with your actual API route
-        setMessages(response.data.messages);
+        const response = await axios.get(`/api/get-anonymousMessages/${params.username}`); // API call
+        setMessages(response.data.messages || []); // Ensure messages is an array
       } catch (error) {
         console.error("Error fetching messages:", error);
       } finally {
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false); // Set loading to false after fetch
       }
     };
 
@@ -52,14 +52,10 @@ const MessageBoard = () => {
 
             {/* Replies Section */}
             <div className="mt-6 space-y-4">
-              {message.reply.length > 0 ? (
                 <div className="p-4 bg-gray-200 text-black rounded-lg shadow-md hover:bg-gray-300 transition-colors duration-300">
                   <p className="text-md">{message.reply}</p>
                   <div className="mt-2 text-sm text-gray-600 italic">— {params.username} Reply</div>
                 </div>
-              ) : (
-                <p className="text-sm text-gray-400">No reply yet.</p>
-              )}
             </div>
           </div>
         ))
