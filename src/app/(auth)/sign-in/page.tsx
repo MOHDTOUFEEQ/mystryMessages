@@ -11,10 +11,13 @@ import { useRouter } from 'next/navigation';
 import { signInSchema } from '@/schemas/signInSchema';
 import { useToast } from '@/hooks/use-toast';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { Login } from '@/lib/features/todos/postsSlice';
 
 export default function SignInForm() {
   const router = useRouter();
 
+  const disptach = useDispatch()
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -45,7 +48,7 @@ export default function SignInForm() {
           description: 'Redirecting to your dashboard...',
           duration: 1500,
         });
-  
+        disptach(Login())
         // Redirect to the dashboard after a successful login
         router.replace('/dashboard');
       } else {

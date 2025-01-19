@@ -9,8 +9,17 @@ const MessageBoard = () => {
     // Fetch messages from the server
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('/api/get-replies'); // Update with your actual API route
-        setMessages(response.data.messages);
+        const response = await axios.get('/api/get-replies'); 
+
+        if (response.data.message == "No messages found") {
+          setMessages([]);
+          
+        }else{
+          setMessages(response.data.messages);
+          console.log("im responses", response);
+        }
+        
+        
       } catch (error) {
         console.error('Error fetching messages:', error);
       }

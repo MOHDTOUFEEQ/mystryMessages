@@ -6,6 +6,7 @@ import AuthProvider from "./AuthProciver";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/navbar";
 import { usePathname } from "next/navigation";
+import  Providers  from "../lib/Provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,8 +32,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider >
+          <Providers  >
           {shouldShowNavbar && <Navbar />}
           {children}
+        </Providers>
         </AuthProvider>
         <Toaster />
       </body>

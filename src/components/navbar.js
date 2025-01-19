@@ -4,20 +4,24 @@ import { HoveredLink, Menu, MenuItem } from "./ui/navbar-menu";
 import { cn } from "../lib/utils";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie"; // Import js-cookie
+import { useDispatch, useSelector } from "react-redux";
+import { Login, Logout } from "@/lib/features/todos/postsSlice";
 
 function Navbarr({ className }) {
+  const userStatus = useSelector((state)=> state.posts)
+  const disptach = useDispatch()
   const [active, setActive] = useState(null);
   const [userActive, setUserActive] = useState(false);
   const router = useRouter(); // Initialize the router
 
-  // Function to check the current auth token and update the state
   const checkAuthToken = () => {
     const token = Cookies.get('auth-token'); 
-
     if (token) {
       setUserActive(true); 
+      disptach(Login())
     } else {
       setUserActive(false); 
+      disptach(Logout())
     }
   };
 
@@ -26,16 +30,15 @@ function Navbarr({ className }) {
     setUserActive(false); 
     router.push("/sign-in");
   };
-
   useEffect(() => {
-    checkAuthToken(); 
+    checkAuthToken();
+    if (userStatus.status == true) {
+      setUserActive(true)
+    }else{
+      setUserActive(false)
 
-    const intervalId = setInterval(checkAuthToken, 1000); 
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
+    }
+  }, [userStatus]);
 
 
 
