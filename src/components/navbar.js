@@ -28,6 +28,7 @@ function Navbarr({ className }) {
   const handleSignOut = () => {
     Cookies.remove("auth-token");
     setUserActive(false); 
+    disptach(Logout())
     router.push("/sign-in");
   };
   useEffect(() => {
